@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Playfair+Display:italic,wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --accent: #ff4d6d;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #f9fafb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* High-End Animated Mesh Background */
+        .background-glow {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 30%, #1e1b4b 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, #4c0519 0%, transparent 40%);
+            filter: blur(80px);
+            animation: moveGlow 15s infinite alternate;
+        }
+
+        @keyframes moveGlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.3); }
+        }
+
+        /* Glassmorphism Card Style */
+        .container {
+            position: relative;
+            width: 480px;
+            padding: 60px 40px;
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-weight: 300;
+            line-height: 1.8;
+            color: #d1d5db;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Button Styling */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .btn {
+            padding: 16px 45px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+        }
+
+        #yesBtn {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        #noBtn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--border);
+        }
+
+        /* Custom "Pop" Overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        .overlay.hidden { opacity: 0; pointer-events: none; }
+
+        /* Final State Content */
+        .final-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .final-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        /* Floating Tulips Effect */
+        .tulip {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.2;
+            z-index: 5;
+            animation: float 12s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-glow"></div>
+
+    <div class="overlay" id="startOverlay">
+        <div style="text-align: center;">
+            <h1 style="font-size: 2rem;">I'm sorry love...</h1>
+            <p>I promise to make you happy and keep making you happy.</p>
+            <button class="btn" id="yesBtn" onclick="closeOverlay()">Open Message</button>
+        </div>
+    </div>
+
+    <div class="container" id="mainCard">
+        <div id="questState">
+            <h1>Forgive me?</h1>
+            <p>I know I've been a handful lately, but I promise to be the man you deserve. Will you give me another chance?</p>
+            <div class="btn-group">
+                <button class="btn" id="yesBtn" onclick="triggerFinal()">Yes</button>
+                <button class="btn" id="noBtn" onclick="handleNo()">No</button>
+            </div>
+        </div>
+
+        <div id="finalState" class="final-content">
+            <h2>im sorry love Ik I’ve messed up a lot..and made a lot of things quite shi..ik these won’t do much..but yes I hope this does even 1% coz I just wanna see you smile..mwah I love you</h2>
+            <div style="font-size: 3rem;">❤️</div>
+        </div>
+    </div>
+
+    <script>
+        function closeOverlay() {
+            document.getElementById('startOverlay').classList.add('hidden');
+        }
+
+        let noClicks = 0;
+        const noBtn = document.getElementById('noBtn');
+
+        function handleNo() {
+            noClicks++;
+            noBtn.innerText = "Yes";
+
+            if (noClicks >= 10) {
+                triggerFinal();
+                return;
+            }
+
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 100);
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+            noBtn.style.zIndex = "1000";
+
+            setTimeout(() => { noBtn.innerText = "No"; }, 400);
+        }
+
+        function triggerFinal() {
+            // Smoothly switch content within the same card
+            document.getElementById('questState').style.display = 'none';
+            const final = document.getElementById('finalState');
+            final.style.display = 'flex';
+            
+            // Subtle card expansion for the final text
+            document.getElementById('mainCard').style.width = '600px';
+        }
+
+        function createTulips() {
+            const emojis = ['🌷', '🌸', '✨'];
+            for (let i = 0; i < 20; i++) {
+                const tulip = document.createElement('div');
+                tulip.className = 'tulip';
+                tulip.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                tulip.style.left = Math.random() * 100 + 'vw';
+                tulip.style.fontSize = Math.random() * 20 + 15 + 'px';
+                tulip.style.animationDuration = Math.random() * 5 + 10 + 's';
+                tulip.style.animationDelay = Math.random() * 8 + 's';
+                document.body.appendChild(tulip);
+            }
+        }
+        createTulips();
+    </script>
+</body>
+</html>
